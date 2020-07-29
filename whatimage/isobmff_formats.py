@@ -1,3 +1,4 @@
+import codecs
 
 def _identify_heic(major_brand, minor_version, compatible_brands):
     container_brands = [b'mif1',b'msf1']
@@ -26,11 +27,12 @@ def identify_isobmff(data):
         return
     if data[4:8] != b'ftyp':
         return
-    ftyp_len = int.from_bytes(data[0:4], 'big')
+    
+    ftyp_len = int(codecs.encode(data[0:4], 'hex'), 16)
     if len(data) < ftyp_len:
         return
     major_brand = data[8:12]
-    minor_version = int.from_bytes(data[12:16], 'big')
+    minor_version = int(codecs.encode(data[12:16], 'hex'), 16)
     compatible_brands = []
     for offset in range(16, ftyp_len, 4):
         compatible_brands.append(data[offset:offset+4])
